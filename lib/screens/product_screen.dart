@@ -4,6 +4,8 @@ import 'package:product_cart_app/models/product.dart';
 import 'package:product_cart_app/provider/cart_provider.dart';
 import 'package:provider/provider.dart';
 
+import 'cart_screen.dart';
+
 class ProductScreen extends StatelessWidget {
   const ProductScreen({super.key});
 
@@ -18,12 +20,24 @@ class ProductScreen extends StatelessWidget {
           style: TextStyle(fontWeight: FontWeight.w600, fontSize: 24),
         ),
         actions: [
-          Icon(Icons.shopping_cart),
+          IconButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => CartScreen()),
+              );
+            },
+            icon: Icon(Icons.shopping_cart),
+          ),
+
           Consumer<CartProvider>(
             builder: (context, cartProvider, _) {
-              return Text(cartProvider.cart.length.toString());
-            }
-          )
+              return Padding(
+                padding: EdgeInsets.only(right: 15),
+                child: Text(cartProvider.totalItems.toString()),
+              );
+            },
+          ),
         ],
       ),
       body: GridView.builder(
@@ -39,28 +53,33 @@ class ProductScreen extends StatelessWidget {
           return Card(
             child: Column(
               children: [
-                Icon(product.icon, size: 130,),
-                SizedBox(height: 5,),
-                Text(product.name, style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w400
-                ),),
-                Text(product.price.toString(), style: TextStyle(
-                  fontWeight: FontWeight.w500,
-                  fontSize: 16
-                ),),
+                Icon(product.icon, size: 130),
+                SizedBox(height: 5),
+                Text(
+                  product.name,
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
+                ),
+                Text(
+                  product.price.toString(),
+                  style: TextStyle(fontWeight: FontWeight.w500, fontSize: 16),
+                ),
                 SizedBox(height: 5),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.blueAccent,
-                    foregroundColor: Colors.white
+                    foregroundColor: Colors.white,
+                    elevation: 5,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadiusGeometry.circular(5),
+                    ),
                   ),
                   onPressed: () {
                     context.read<CartProvider>().addToCart(product);
                   },
-                  child: Text('Add to Cart',style: TextStyle(
-                    fontWeight: FontWeight.w700,
-                  ),),
+                  child: Text(
+                    'Add to Cart',
+                    style: TextStyle(fontWeight: FontWeight.w700),
+                  ),
                 ),
               ],
             ),
