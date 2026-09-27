@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:product_cart_app/models/cart_item.dart';
 import 'package:product_cart_app/models/product.dart';
 
+import '../data/products.dart';
+
 class CartProvider extends ChangeNotifier{
   List<CartItem> cart = [];
 
@@ -69,6 +71,28 @@ class CartProvider extends ChangeNotifier{
 
   void clearCart() {
     cart.clear();
+    notifyListeners();
+  }
+
+  String searchText = '';
+
+  void searchProduct(String value) {
+    searchText = value;
+    notifyListeners();
+  }
+  List<Product> get filteredProducts {
+    return products.where((product) {
+      return product.name
+          .toLowerCase()
+          .contains(searchText.toLowerCase()) &&
+          (selectedCategory == 'All' ||
+              product.category == selectedCategory);
+    }).toList();
+  }
+
+  String selectedCategory = 'All';
+  void selectCategory(String category) {
+    selectedCategory = category;
     notifyListeners();
   }
 
